@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ji</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="ji.js"></script>
+    <script src="codemirror.js"></script>
+    <script src="javascript_mode.js"></script>
+    <link rel="stylesheet" href="codemirror.css">
+    <style type="text/css">
+
+* {
+  font-family: Menlo, Monaco, monospace;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.red {
+  color: #d00;
+  background-color: #fdd;
+}
+
+.green {
+  color: #080;
+  background-color: #dfd;
+}
+
+#status {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  font-size: 14px;
+  padding-top: 10px;
+  padding-left: 50%;
+}
+
+.CodeMirror {
+  position: absolute;
+  top: 40px;
+  bottom: 0;
+  width: 50%;
+  height: initial;
+  border: 1px solid black;
+}
+
+.CodeMirror:first-of-type {
+  left: 0;
+  right: 50%;
+}
+
+.CodeMirror:last-of-type {
+  left: 50%;
+  right: 0; 
+}
+
+#production {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  width: 50%;
+  right: 0;
+  bottom: 0;
+}
+
+textarea {
+  font-size: 18px;
+}
+
+    </style>
+  </head>
+  <body>
+    <textarea id="tests">
+// tests go here
+// hint: open the javascript console for better failure messages
+
+expect(1 + 1, toEqual, 2)
+    </textarea>
+    <textarea id="production">
+// production code goes here</textarea>
+    <p id="status"></p>
+    <script type="text/javascript">
+
+"use strict";
+
+var testText = document.getElementById('tests')
+var prodText = document.getElementById('production')
+var statusBar = document.getElementById('status')
+var runTimeout = null
+
+var testEditor = CodeMirror.fromTextArea(testText, {mode: 'javascript'})
+var prodEditor = CodeMirror.fromTextArea(prodText, {mode: 'javascript'})
+
+function success() {
+  statusBar.innerText = 'No errors'
+  statusBar.className = 'green'
+  console.clear()
+}
+
+success()
+
+function failure(error) {
+  statusBar.innerText = error.toString()
+  statusBar.className = 'red'
+}
+
+function runTests() {
+  try {
+    eval(prodEditor.getValue() + "\n;" + testEditor.getValue())
+    success()
+  } catch (e) {
+    failure(e)
+  }
+}
+
+window.addEventListener('keyup', () => {
+  window.clearTimeout(runTimeout)
+  runTimeout = window.setTimeout(runTests, 300)
+})
+
+    </script>
+  </body>
+</html>
