@@ -82,6 +82,7 @@ expect(1 + 1, toEqual, 2)
 // production code goes here</textarea>
     <p id="status"></p>
     <script type="text/javascript">
+(function iife() {
 
 "use strict";
 
@@ -89,6 +90,12 @@ var testText = document.getElementById('tests')
 var prodText = document.getElementById('production')
 var statusBar = document.getElementById('status')
 var runTimeout = null
+
+var useLocalStorage = testLocalStorage();
+if (useLocalStorage) {
+  testText.innerHTML = (localStorage.getItem('testEditor') || testText.innerHTML)
+  prodText.innerHTML = (localStorage.getItem('prodEditor') || prodText.innerHTML)
+}
 
 var testEditor = CodeMirror.fromTextArea(testText, {mode: 'javascript'})
 var prodEditor = CodeMirror.fromTextArea(prodText, {mode: 'javascript'})
@@ -99,27 +106,45 @@ function success() {
   console.clear()
 }
 
-success()
-
 function failure(error) {
   statusBar.innerText = error.toString()
   statusBar.className = 'red'
 }
 
 function runTests() {
+  var t = testEditor.getValue()
+  var p = prodEditor.getValue()
+  if (useLocalStorage) {
+    localStorage.setItem('testEditor', t)
+    localStorage.setItem('prodEditor', p)
+  }
   try {
-    eval(prodEditor.getValue() + "\n;" + testEditor.getValue())
+    eval(p + "\n;" + t)
     success()
   } catch (e) {
     failure(e)
   }
 }
 
+runTests()
+
 window.addEventListener('keyup', () => {
   window.clearTimeout(runTimeout)
   runTimeout = window.setTimeout(runTests, 300)
 })
 
+function testLocalStorage(){
+  var test = 'test'
+  try {
+    localStorage.setItem(test, test)
+    localStorage.removeItem(test)
+    return true
+  } catch(e) {
+    return false
+  }
+}
+
+}).call(this);
     </script>
   </body>
 </html>
