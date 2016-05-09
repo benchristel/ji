@@ -82,6 +82,7 @@ expect(1 + 1, toEqual, 2)
 // production code goes here</textarea>
     <p id="status"></p>
     <script type="text/javascript">
+(function iife() {
 
 "use strict";
 
@@ -120,6 +121,7 @@ window.addEventListener('keyup', () => {
   runTimeout = window.setTimeout(runTests, 300)
 })
 
+}).call(this);
     </script>
   </body>
 </html>
