@@ -115,7 +115,7 @@ function runTests() {
   }
 }
 
-window.addEventListener('keyup', () => {
+window.addEventListener('keyup', function() {
   window.clearTimeout(runTimeout)
   runTimeout = window.setTimeout(runTests, 300)
 })

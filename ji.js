@@ -23,8 +23,3 @@ function toBeEmpty(actual) {
 	return actual.length === 0
 }
 
-function not(verb) {
-	var negated = (...args) => !verb(...args)
-	negated.negatedName = "not " + verb.name
-	return negated
-}
